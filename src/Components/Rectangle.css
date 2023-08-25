@@ -1,0 +1,12 @@
+.Rectangle {
+  width: 50px;
+  max-height: calc(100% - 2px);
+  min-height: 100px;
+  background-color: lightskyblue;
+  margin: 2px;
+
+  border-width: 1px;
+  border-style: solid;
+
+  align-self: flex-end;
+}

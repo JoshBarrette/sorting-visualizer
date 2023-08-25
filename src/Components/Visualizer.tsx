@@ -1,10 +1,21 @@
+import Rectangle from "./Rectangle";
 import "./Visualizer.css";
 
-export default function Visualizer() {
+type visualizerProps = {
+  maxHeight?: number,
+  minHeight?: number,
+  rectangles: number[]
+}
+
+export default function Visualizer(props: visualizerProps) {
   return (
     <div className="Visualizer">
       <div id="window">
-        <p>Histogram of current array that is being sorted</p>
+        {props.rectangles.map((height, key) => {
+          return (
+            <Rectangle height={height} key={key}/>
+          )
+        })}
       </div>
     </div>
   )

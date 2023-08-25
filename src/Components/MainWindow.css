@@ -6,14 +6,11 @@
 
 .Controls {
   width: 100%;
-  height: 60px;
-  background-color: lightcoral;
+  text-align: center;
+  position: absolute;
+  padding-top: 25px;
 }
 
-.noMargin {
-  margin: 0px;
-}
-
-label {
-  display: block;
+#speed {
+  width: 80px;
 }

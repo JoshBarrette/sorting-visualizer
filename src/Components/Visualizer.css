@@ -1,19 +1,15 @@
 .Visualizer {
   height: calc(100% - 60px);
   width: 100%;
-  background-color: lightsalmon;
 }
 
 #window {
   position: absolute;
-  width: calc(100% - 50px);
+  width:100%;
   height: calc(100% - 110px);
 
-  margin: 25px;
+  bottom: 25px;
 
-  border-style: solid;
-  border-width: 2px;
-
-  background-color: lightgray;
-  text-align: center;
+  display: flex;
+  justify-content: center;
 }
