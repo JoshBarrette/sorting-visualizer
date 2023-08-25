@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./MainWindow.css";
 import Visualizer from "./Visualizer";
+import { parse } from "path";
 
 /*
   <window div>
@@ -14,14 +15,26 @@ import Visualizer from "./Visualizer";
 */
 
 export default function MainWindow() {
-  const [rectangles, setRectangles] = React.useState([200, 600, 300])
+  const [rectangles, setRectangles] = React.useState([200, 600, 300]);
+  const [delay, setDelay] = React.useState(50);
   const [hackRender, setHackRender] = React.useState(true);
-  var delay = 10;
+  const [shouldRender, setShouldRender] = React.useState(true);
 
-  const handleSpeedChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-    delay = parseInt(newValue);
-  };
+  useEffect(() => { // thanks chat gpt
+    if (shouldRender) {
+      const timeout = setTimeout(() => {
+        setShouldRender(false);
+      }, 0);
+      // this timeout needs to be here for the other one to work
+      // even though this one has no effect on the amount of delay at all
+
+      return () => clearTimeout(timeout);
+    }
+  }, [shouldRender]);
+
+  const handleDelayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDelay(parseInt(event.target.value));
+  }
 
   const handleNumRectsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let newValue = parseInt(event.target.value);
@@ -53,10 +66,10 @@ export default function MainWindow() {
       swapped = false;
       for (j = 0; j < n - i - 1; j++) {
         if (rectangles[j] > rectangles[j + 1]) {
-          let temp;
-          temp = rectangles[j];
-          rectangles[j] = rectangles[j + 1];
-          rectangles[j + 1] = temp;
+          swap(j);
+          await new Promise((resolve) => {
+            setTimeout(resolve, delay);
+          });
           swapped = true;
         }
       }
@@ -64,17 +77,23 @@ export default function MainWindow() {
       if (swapped == false)
         break;
     }
+  }
 
-    setHackRender(!hackRender);
+  const swap = (idx: number) => {
+    let temp = rectangles[idx];
+    rectangles[idx] = rectangles[idx + 1];
+    rectangles[idx + 1] = temp;
+
+    setShouldRender(true);
   }
 
   return (
     <div className="MainWindow">
       <div className="Controls">
-        <label htmlFor="speed" id="speedLabel">Delay in ms:</label>
-        <input defaultValue={10} type="number" id="speed" onChange={handleSpeedChange} />
+        <label htmlFor="delayCount">Delay in ms:</label>
+        <input defaultValue={50} type="number" id="delayCount" onChange={handleDelayChange} />
 
-        <label htmlFor="numRects" id="speedLabel">Number of rectangles:</label>
+        <label htmlFor="numRects">Number of rectangles:</label>
         <input defaultValue={3} type="number" id="numRects" onChange={handleNumRectsChange} />
 
         <button onClick={reRollRects}>randomize values</button>
