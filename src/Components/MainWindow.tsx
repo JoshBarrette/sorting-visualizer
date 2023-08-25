@@ -1,7 +1,6 @@
-import React, { ReactEventHandler } from "react";
+import React from "react";
 import "./MainWindow.css";
 import Visualizer from "./Visualizer";
-import Rectangle from "./Rectangle";
 
 /*
   <window div>
@@ -14,18 +13,14 @@ import Rectangle from "./Rectangle";
   Hold the arrays and state for algorithms in this class.
 */
 
-type mainWindowProps = {
-  children: JSX.Element
-}
-
 export default function MainWindow() {
-  const [delay, setDelay] = React.useState(10);
   const [rectangles, setRectangles] = React.useState([200, 600, 300])
   const [hackRender, setHackRender] = React.useState(true);
+  var delay = 10;
 
   const handleSpeedChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setDelay(parseInt(newValue));
+    delay = parseInt(newValue);
   };
 
   const handleNumRectsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,34 +36,35 @@ export default function MainWindow() {
     setRectangles(arr);
   };
 
-  const sort = () => {
+  const reRollRects = () => {
+    let arr = new Array<number>();
+    for (let i = 0; i < rectangles.length; i++) {
+      arr[i] = Math.floor(Math.random() * (600 - 100 + 1)) + 100;
+    }
+    setRectangles(arr);
+  }
+
+  const bubbleSort = async () => {
     let i, j;
     let n = rectangles.length;
     let swapped;
-    for (i = 0; i < n - 1; i++) 
-    {
-        swapped = false;
-        for (j = 0; j < n - i - 1; j++) 
-        {
-            if (rectangles[j] > rectangles[j + 1]) 
-            {
-                swap(j);
-                swapped = true;
-            }
+
+    for (i = 0; i < n - 1; i++) {
+      swapped = false;
+      for (j = 0; j < n - i - 1; j++) {
+        if (rectangles[j] > rectangles[j + 1]) {
+          let temp;
+          temp = rectangles[j];
+          rectangles[j] = rectangles[j + 1];
+          rectangles[j + 1] = temp;
+          swapped = true;
         }
-  
-        // IF no two elements were 
-        // swapped by inner loop, then break
-        if (swapped == false)
+      }
+
+      if (swapped == false)
         break;
     }
-  }
 
-  const swap = (j: number) => {
-    let temp;
-    temp = rectangles[j];
-    rectangles[j] = rectangles[j + 1];
-    rectangles[j + 1] = temp;
     setHackRender(!hackRender);
   }
 
@@ -81,7 +77,9 @@ export default function MainWindow() {
         <label htmlFor="numRects" id="speedLabel">Number of rectangles:</label>
         <input defaultValue={3} type="number" id="numRects" onChange={handleNumRectsChange} />
 
-        <button onClick={sort}>sort</button>
+        <button onClick={reRollRects}>randomize values</button>
+        <button onClick={bubbleSort}>bubble sort</button>
+        <button onClick={() => setHackRender(!hackRender)}>re-render</button>
       </div>
 
       <Visualizer rectangles={rectangles} />
