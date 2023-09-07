@@ -6,12 +6,12 @@ export default function MainWindow() {
   const [rectangles, setRectangles] = React.useState([200, 600, 300]);
   const [delay, setDelay] = React.useState(50);
   const [hackRender, setHackRender] = React.useState(true);
-  const [shouldReRender, setShouldRender] = React.useState(true);
+  const [shouldReRender, setShouldReRender] = React.useState(true);
 
   useEffect(() => { // thanks chat gpt
     if (shouldReRender) {
       const timeout = setTimeout(() => {
-        setShouldRender(false);
+        setShouldReRender(false);
       }, 0);
       // this timeout needs to be here for the other one to work
       // even though this one has no effect on the amount of delay at all
@@ -21,7 +21,16 @@ export default function MainWindow() {
   }, [shouldReRender]);
 
   const handleDelayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDelay(parseInt(event.target.value));
+    let newDelay = parseInt(event.target.value);
+    if (newDelay < 0) {
+      setDelay(0);
+    } else {
+      setDelay(newDelay);
+    }
+  }
+
+  const randomRectNum = () => {
+    return Math.floor(Math.random() * (600 - 100 + 1)) + 100;
   }
 
   const handleNumRectsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +41,7 @@ export default function MainWindow() {
 
     let arr = new Array<number>();
     for (let i = 0; i < newValue; i++) {
-      arr[i] = Math.floor(Math.random() * (600 - 100 + 1)) + 100;
+      arr[i] = randomRectNum();
     }
     setRectangles(arr);
   };
@@ -40,7 +49,7 @@ export default function MainWindow() {
   const reRollRects = () => {
     let arr = new Array<number>();
     for (let i = 0; i < rectangles.length; i++) {
-      arr[i] = Math.floor(Math.random() * (600 - 100 + 1)) + 100;
+      arr[i] = randomRectNum();
     }
     setRectangles(arr);
   }
@@ -55,16 +64,22 @@ export default function MainWindow() {
       for (j = 0; j < n - i - 1; j++) {
         if (rectangles[j] > rectangles[j + 1]) {
           swap(j);
-          await new Promise((resolve) => {
-            setTimeout(resolve, delay);
-          });
+          if (delay > 0) {
+            await new Promise((resolve) => {
+              setTimeout(resolve, delay);
+            });
+          }
           swapped = true;
         }
       }
 
-      if (swapped == false)
+      if (swapped === false) {
         break;
+      }
     }
+
+    // Re-render just incase something messes up (like on a low delay).
+    setShouldReRender(true);
   }
 
   const swap = (idx: number) => {
@@ -72,7 +87,7 @@ export default function MainWindow() {
     rectangles[idx] = rectangles[idx + 1];
     rectangles[idx + 1] = temp;
 
-    setShouldRender(true);
+    setShouldReRender(true);
   }
 
   return (
