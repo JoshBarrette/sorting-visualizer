@@ -1,4 +1,5 @@
 # Sorting Algorithm Visualizer
 
 TODO:
-- figure out how to make react re-render in between swaps
+- Add a way of showing what rectangles are being looked at.
+- More sorting algorithms.

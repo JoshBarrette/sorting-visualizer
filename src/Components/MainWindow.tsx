@@ -1,27 +1,15 @@
 import React, { useEffect } from "react";
 import "./MainWindow.css";
 import Visualizer from "./Visualizer";
-import { parse } from "path";
-
-/*
-  <window div>
-    <header for settings />
-    <viewer>
-      <rectangle />
-    </viewer>
-  </window div>
-
-  Hold the arrays and state for algorithms in this class.
-*/
 
 export default function MainWindow() {
   const [rectangles, setRectangles] = React.useState([200, 600, 300]);
   const [delay, setDelay] = React.useState(50);
   const [hackRender, setHackRender] = React.useState(true);
-  const [shouldRender, setShouldRender] = React.useState(true);
+  const [shouldReRender, setShouldRender] = React.useState(true);
 
   useEffect(() => { // thanks chat gpt
-    if (shouldRender) {
+    if (shouldReRender) {
       const timeout = setTimeout(() => {
         setShouldRender(false);
       }, 0);
@@ -30,7 +18,7 @@ export default function MainWindow() {
 
       return () => clearTimeout(timeout);
     }
-  }, [shouldRender]);
+  }, [shouldReRender]);
 
   const handleDelayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDelay(parseInt(event.target.value));
